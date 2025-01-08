@@ -8,22 +8,23 @@ use App\Models\Categorie;
 
 class CategorieController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    /* Récupérer la liste des catégories avec leurs sous-catégories */
     public function index()
     {
 
         $categories = Categorie::with('subcategories')->get();
-        
-        // foreach ($categories as $category) {
-        //     echo $category->name . ":\n";
-        //     foreach ($category->subcategories as $subcategory) {
-        //         echo "  - " . $subcategory->name . "\n";
-        //     }
-        // }
         return response()->json($categories);
 
+    }
+    /* Récupérer les sous-catégories d'une catégorie */
+    public function subcategories($id)
+    {
+        $category = Categorie::find($id);
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        return response()->json($category->subcategories);
     }
 
     /**

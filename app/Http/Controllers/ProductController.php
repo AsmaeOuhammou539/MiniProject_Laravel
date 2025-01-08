@@ -34,7 +34,7 @@ class ProductController extends Controller
         ]);
 
         $product = Product::create($validatedData);
-
+        // $product = $request->user()->products()->create($request->all());
         return response()->json($product, 201);
     }
 
@@ -44,7 +44,13 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Produit non trouvé'], 404);
+        }
+
+        return response()->json($product);    
     }
 
     /**
@@ -61,8 +67,10 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to delete this product'], 403);
+        }
         $product->delete();
-
         return response()->json(['message' => 'Product deleted successfully']);
     }
 }

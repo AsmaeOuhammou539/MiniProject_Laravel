@@ -1,38 +1,29 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    /* Récupérer les produits partagés par l'utilisateur authentifié.*/
+    public function products(Request $request)
     {
-        //
+        $user = $request->user();
+        $products = $user->products;
+
+        return response()->json($products);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    /* Créer un nouvel utilisateur.*/
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',  // Assurez-vous que la confirmation du mot de passe est envoyée
+            'password' => 'required|string|min:8|confirmed',
             'ville' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:20',
         ]);
@@ -40,46 +31,90 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),  // Utilisez Hash::make pour hacher le mot de passe
+            'password' => Hash::make($request->password),
             'ville' => $request->ville,
             'phone_number' => $request->phone_number,
         ]);
-        
+
         return response()->json([
             'message' => 'Utilisateur créé avec succès !',
-            'user' => $user
+            'user' => $user,
         ], 201);
     }
 
+    
+
     /**
-     * Display the specified resource.
+     * Lister toutes les ressources (non implémenté).
+     */
+    public function index()
+    {
+        $users = User::all();
+        return response()->json($users,200);    }
+
+   
+
+    /**
+     * Afficher une ressource spécifique (non implémenté).
      */
     public function show(string $id)
     {
-        //
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        return response()->json($user); 
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Afficher le formulaire pour éditer une ressource (non implémenté).
      */
     public function edit(string $id)
     {
-        //
+        // Placeholder pour une future implémentation.
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mettre à jour une ressource spécifique (non implémenté).
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        $request->validate([
+            'name' => 'string|max:255',
+            'email' => 'string|email|max:255|unique:users,email,' . $id,
+            'ville' => 'nullable|string|max:255',
+            'phone_number' => 'nullable|string|max:20',
+        ]);
+
+        $user->update($request->only(['name', 'email', 'ville', 'phone_number']));
+
+        return response()->json([
+            'message' => 'Utilisateur mis à jour avec succès',
+            'user' => $user,
+        ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprimer une ressource spécifique (non implémenté).
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'Utilisateur supprimé avec succès']);
     }
 }
