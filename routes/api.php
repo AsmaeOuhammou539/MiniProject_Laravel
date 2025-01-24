@@ -29,8 +29,10 @@ Route::get('/categories', [CategorieController::class, 'index']);
 //Récupérer les sous-catégories d'une catégorie
 Route::get('/categories/{id}/subcategories', [CategorieController::class, 'subcategories']);
 
+Route::get('/categories/{id}/products', [ProductController::class, 'getProductsByCategory']);
+Route::get('/categories/{id}/SubcategorieProducts', [ProductController::class, 'getProductsBySubCategory']);
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
-Route::post('/products', [ProductController::class, 'store']);
+Route::middleware('auth:sanctum')->post('/products', [ProductController::class, 'store']);
 Route::middleware('auth:sanctum')->delete('/products/{id}', [ProductController::class, 'destroy']);

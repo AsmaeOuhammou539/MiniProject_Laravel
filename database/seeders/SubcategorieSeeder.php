@@ -21,9 +21,9 @@ class SubcategorieSeeder extends Seeder
             ['category_id' => 1, 'name' => 'Accessoires', 'created_at' => now(), 'updated_at' => now()],
             
             // mode
-            ['category_id' => 2, 'name' => 'Femme', 'created_at' => now(), 'updated_at' => now()],
-            ['category_id' => 2, 'name' => 'Homme', 'created_at' => now(), 'updated_at' => now()],
-            ['category_id' => 2, 'name' => 'Bébé', 'created_at' => now(), 'updated_at' => now()],
+            ['category_id' => 2, 'name' => 'vêtements', 'created_at' => now(), 'updated_at' => now()],
+            ['category_id' => 2, 'name' => 'chaussures', 'created_at' => now(), 'updated_at' => now()],
+            ['category_id' => 2, 'name' => 'accessoires', 'created_at' => now(), 'updated_at' => now()],
         
             // Bijoux
             ['category_id' => 3, 'name' => 'Femme', 'created_at' => now(), 'updated_at' => now()],
