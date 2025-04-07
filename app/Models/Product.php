@@ -37,4 +37,9 @@ class Product extends Model
     {
         return $this->belongsTo(Subcategorie::class, 'sub_category_id');
     }
+    public function favoritedBy()
+{
+    return $this->belongsToMany(User::class, 'favorites')
+        ->withTimestamps();
+}
 }

@@ -75,9 +75,9 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'phone_number' => 'required|string',
+            'phone_number' => 'required|string|max:20',
             'ville' => 'required|string',
-            'image_url' => 'required|string',
+            'image_url' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
         // Obtenir l'utilisateur connecté
         $user = auth()->user();
@@ -118,9 +118,34 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        //
+{
+    $product = Product::findOrFail($id);
+
+    if ($product->user_id !== auth()->id()) {
+        return response()->json(['message' => 'You do not have permission to update this product'], 403);
     }
+
+    $validatedData = $request->validate([
+        'category_id' => 'sometimes|exists:categories,id',
+        'sub_category_id' => 'sometimes|exists:subcategories,id',
+        'name' => 'sometimes|string|max:255',
+        'description' => 'sometimes|string',
+        'price' => 'sometimes|numeric|min:0',
+        'phone_number' => 'sometimes|string|max:20',
+        'ville' => 'sometimes|string',
+        'image_url' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    if ($request->hasFile('image_url')) {
+        $path = $request->file('image_url')->store('images', 'public');
+        $validatedData['image_url'] = $path;
+    }
+
+    $product->update($validatedData);
+
+    return response()->json($product);
+}
+
 
     /**
      * Remove the specified resource from storage.
@@ -133,5 +158,18 @@ class ProductController extends Controller
         }
         $product->delete();
         return response()->json(['message' => 'Product deleted successfully']);
+    }
+    public function checkFavorite($productId)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['is_favorite' => false]);
+        }
+
+        $isFavorite = $user->favoriteProducts()
+            ->where('product_id', $productId)
+            ->exists();
+
+        return response()->json(['is_favorite' => $isFavorite]);
     }
 }

@@ -18,7 +18,7 @@ class SubcategorieSeeder extends Seeder
             ['category_id' => 1, 'name' => 'Téléphones', 'created_at' => now(), 'updated_at' => now()],
             ['category_id' => 1, 'name' => 'Ordinateurs', 'created_at' => now(), 'updated_at' => now()],
             ['category_id' => 1, 'name' => 'Tablettes', 'created_at' => now(), 'updated_at' => now()],
-            ['category_id' => 1, 'name' => 'Accessoires', 'created_at' => now(), 'updated_at' => now()],
+            ['category_id' => 1, 'name' => 'Accessoires numériques', 'created_at' => now(), 'updated_at' => now()],
             
             // mode
             ['category_id' => 2, 'name' => 'vêtements', 'created_at' => now(), 'updated_at' => now()],
